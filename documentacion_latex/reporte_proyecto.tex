@@ -1,0 +1,560 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Paquetes Esenciales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+% --- Definición de Colores ---
+\definecolor{primaryblue}{RGB}{13, 110, 253}
+\definecolor{darkblue}{RGB}{15, 23, 42}
+\definecolor{codebg}{RGB}{248, 249, 250}
+\definecolor{codeframe}{RGB}{226, 232, 240}
+\definecolor{codegreen}{RGB}{34, 139, 34}
+\definecolor{codegray}{RGB}{108, 117, 125}
+\definecolor{codepurple}{RGB}{128, 0, 128}
+
+% --- Configuración de Enlaces ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    filecolor=primaryblue,
+    urlcolor=primaryblue,
+    citecolor=primaryblue,
+    pdfauthor={Estudiantes de Ciencia de Datos},
+    pdftitle={Proyecto Final - Base de Datos con Acceso Web Django - Computación Concurrente}
+}
+
+% --- Configuración de Listados de Código ---
+\lstset{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{primaryblue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=6pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    frame=single,
+    rulecolor=\color{codeframe}
+}
+
+% --- Encabezados y Pies de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small \textbf{Computación Concurrente} | Proyecto Final Django}
+\fancyhead[R]{\small Licenciatura en Ciencia de Datos}
+\fancyfoot[L]{\small \textit{Prof. Adrián Durán Chavesti}}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\small SQLite \& Django}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+% =========================================================================
+% PORTADA INSTITUCIONAL
+% =========================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{0.5cm}
+    
+    {\Huge \textbf{LICENCIATURA EN CIENCIA DE DATOS}}\\[0.4cm]
+    {\LARGE \textbf{COMPUTACIÓN CONCURRENTE}}\\[1.5cm]
+    
+    \rule{\linewidth}{1.5mm}\\[0.4cm]
+    {\huge \bfseries Proyecto Final: Creación de una Base de Datos con Acceso Web usando Django en Python}\\[0.2cm]
+    \rule{\linewidth}{0.5mm}\\[1.5cm]
+    
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushleft} \large
+            \textbf{Docente:}\\
+            Esp. Adrián Durán Chavesti\\[0.8cm]
+            \textbf{Asignatura:}\\
+            Computación Concurrente
+        \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushright} \large
+            \textbf{Tema del Proyecto:}\\
+            Top 3 Supercomputadoras del Mundo\\
+            Base de Datos SQLite y CRUD Web\\[0.8cm]
+            \textbf{Entrega:}\\
+            Jueves 26 de Noviembre
+        \end{flushright}
+    \end{minipage}
+    
+    \vfill
+    
+    \begin{center}
+        \large
+        \textbf{Objetivo General del Proyecto:}\\
+        \textit{"Con ayuda del framework Django crear y gestionar una base de datos SQLite con el lenguaje de programación Python, implementando las funciones de Agregar, Editar, Borrar y Visualizar las 3 computadoras más rápidas del mundo."}
+    \end{center}
+    
+    \vspace{0.8cm}
+    {\large Ciclo Académico 2026}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% =========================================================================
+% SECCIÓN 1: INTRODUCCIÓN Y OBJETIVOS
+% =========================================================================
+\section{Introducción y Objetivos}
+
+En el marco de la asignatura \textbf{Computación Concurrente} de la Licenciatura en Ciencia de Datos, el procesamiento paralelo a escala extrema y la computación de alto rendimiento (\textit{High-Performance Computing}, HPC) representan pilares tecnológicos esenciales para el entrenamiento de modelos de inteligencia artificial, simulación física, modelado climático y bioinformática.
+
+El presente proyecto final consiste en el diseño, desarrollo, pruebas y puesta en producción local de una aplicación web completa desarrollada con el framework \textbf{Django} y el lenguaje \textbf{Python}, conectada de forma nativa a un motor de base de datos relacional \textbf{SQLite}.
+
+\subsection{Objetivos Específicos}
+\begin{itemize}
+    \item Implementar un modelo de datos estructurado en SQLite que contenga fielmente los 7 atributos requeridos de las 3 computadoras más rápidas del mundo:
+    \begin{enumerate}
+        \item Nombre
+        \item País de origen
+        \item Número de cores (núcleos de procesamiento concurrentes)
+        \item Cantidad de memoria RAM (en Terabytes)
+        \item Capacidad de almacenamiento masivo (en Terabytes)
+        \item Rendimiento de procesamiento (en TeraFLOPS)
+        \item Sistema operativo
+    \end{enumerate}
+    \item Desarrollar una interfaz de usuario web responsiva, moderna y accesible mediante Bootstrap 5.
+    \item Implementar las 4 operaciones fundamentales de persistencia de datos (CRUD):
+    \begin{itemize}
+        \item \textbf{Agregar:} Registro seguro mediante formularios con validación.
+        \item \textbf{Editar:} Actualización en tiempo real de los parámetros técnicos.
+        \item \textbf{Borrar:} Eliminación persistente con cuadro de confirmación para evitar borrados accidentales.
+        \item \textbf{Visualizar:} Dashboard general con métricas agregadas y ficha técnica individual.
+    \end{itemize}
+    \item Habilitar el panel de administración oficial de Django para auditoría y gestión de datos.
+    \item Verificar el correcto funcionamiento del sistema mediante una batería de pruebas unitarias automatizadas.
+\end{itemize}
+
+\newpage
+
+% =========================================================================
+% SECCIÓN 2: LAS 3 COMPUTADORAS MÁS RÁPIDAS DEL MUNDO
+% =========================================================================
+\section{Las 3 Supercomputadoras Más Rápidas del Mundo}
+
+De acuerdo con el ranking internacional \textbf{TOP500} de sistemas superinformáticos, las 3 computadoras más potentes del planeta en la actualidad pertenecen a la era del cómputo a \textit{Exaescala} (capaces de superar $10^{18}$ operaciones de coma flotante por segundo). A continuación, se detallan las especificaciones técnicas integradas en la base de datos:
+
+\begin{table}[H]
+    \centering
+    \caption{Parámetros Técnicos de las 3 Supercomputadoras más Rápidas}
+    \label{tab:supercomputadoras}
+    \small
+    \begin{tabularx}{\textwidth}{l p{3.2cm} p{3.2cm} p{3.5cm}}
+        \toprule
+        \textbf{Parámetro} & \textbf{\#1 El Capitan} & \textbf{\#2 Frontier} & \textbf{\#3 Aurora} \\
+        \midrule
+        \textbf{País de Origen} & Estados Unidos & Estados Unidos & Estados Unidos \\
+        \textbf{Institución} & Lawrence Livermore Nat. Lab & Oak Ridge Nat. Lab & Argonne Nat. Lab \\
+        \textbf{Número de Cores} & 11,340,000 núcleos & 9,066,176 núcleos & 9,264,128 núcleos \\
+        \textbf{Cantidad de RAM} & 5,437.00 TB (5.44 PB) & 9,200.00 TB (9.20 PB) & 10,900.00 TB (10.90 PB) \\
+        \textbf{Almacenamiento} & 40,000.00 TB (40 PB) & 70,000.00 TB (70 PB Orion) & 220,000.00 TB (220 PB DAOS) \\
+        \textbf{Rendimiento TFLOPS} & \textbf{1,809,000.00 TFLOPS} & \textbf{1,353,000.00 TFLOPS} & \textbf{1,012,000.00 TFLOPS} \\
+        \textbf{Rendimiento EFLOPS} & 1.809 ExaFLOPS Rmax & 1.353 ExaFLOPS Rmax & 1.012 ExaFLOPS Rmax \\
+        \textbf{Sistema Operativo} & TOSS (Tri-Lab OS / RHEL) & HPE Cray OS (SUSE Linux) & SUSE Linux Enterprise Server \\
+        \textbf{Arquitectura} & HPE Cray EX255a / AMD & HPE Cray EX235a / AMD & HPE Cray EX / Intel Max \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Relación de Unidades de Medida y Cómputo Paralelo}
+Para comprender la escala de estos sistemas concurrentes:
+\begin{itemize}
+    \item $1 \text{ PetaFLOPS (PFLOPS)} = 1,000 \text{ TeraFLOPS (TFLOPS)} = 10^{15} \text{ FLOPS}$
+    \item $1 \text{ ExaFLOPS (EFLOPS)} = 1,000,000 \text{ TeraFLOPS} = 10^{18} \text{ FLOPS}$
+    \item $1 \text{ Petabyte (PB)} = 1,000 \text{ Terabytes (TB)}$
+\end{itemize}
+
+\newpage
+
+% =========================================================================
+% SECCIÓN 3: GUÍA PASO A PASO CON CAPTURAS DE TERMINAL
+% =========================================================================
+\section{Guía Paso a Paso: Instalación, Configuración y Comandos}
+
+En esta sección se documenta en orden cronológico cada uno de los comandos ejecutados en el sistema operativo Windows para crear y configurar el proyecto, adjuntando la captura visual correspondiente.
+
+\subsection{Paso 1: Verificación del Entorno de Python y Pip}
+Se comprobó la existencia del intérprete de Python en versión compatible y del gestor de paquetes \texttt{pip}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/01_verificar_entorno.png}
+    \caption{Captura del comando de verificación de Python y Pip.}
+    \label{fig:p1_entorno}
+\end{figure}
+
+\subsection{Paso 2: Instalación del Framework Django}
+Se ejecutó la instalación de Django a través de \texttt{pip install django}, instalando también las dependencias esenciales \texttt{asgiref} y \texttt{sqlparse}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/02_instalacion_django.png}
+    \caption{Captura de la instalación de Django mediante pip.}
+    \label{fig:p2_django}
+\end{figure}
+
+\subsection{Paso 3: Creación del Proyecto y la Aplicación}
+Con la herramienta administrativa de Django se generó el proyecto raíz \texttt{supercomputadoras\_project} y la aplicación modular \texttt{computadoras}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/03_creacion_proyecto.png}
+    \caption{Captura de creación del proyecto y aplicación con manage.py.}
+    \label{fig:p3_proyecto}
+\end{figure}
+
+\subsection{Paso 4: Generación de Migraciones (makemigrations)}
+Tras declarar la clase \texttt{Supercomputadora} en \texttt{models.py}, se ejecutó \texttt{makemigrations} para que el ORM de Django traduzca el modelo en un archivo de migración estructurado.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/04_makemigrations.png}
+    \caption{Captura de la creación de la migración inicial del modelo.}
+    \label{fig:p4_makemigrations}
+\end{figure}
+
+\subsection{Paso 5: Aplicación de Migraciones a SQLite (migrate)}
+El comando \texttt{migrate} impactó el esquema relacional en el archivo físico \texttt{db.sqlite3}, creando las tablas de supercomputadoras, autenticación y sesiones.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/05_migrate.png}
+    \caption{Captura de la ejecución de migraciones en SQLite.}
+    \label{fig:p5_migrate}
+\end{figure}
+
+\subsection{Paso 6: Poblado Automático de las 3 Supercomputadoras}
+Se creó y ejecutó un comando de gestión personalizado (\texttt{poblar\_datos}) que sembró automáticamente las 3 computadoras más rápidas del mundo en la base de datos SQLite.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/06_poblar_datos.png}
+    \caption{Captura de la ejecución del comando para poblar la base de datos.}
+    \label{fig:p6_poblar}
+\end{figure}
+
+\subsection{Paso 7: Creación del Superusuario para el Administrador}
+Se generó la cuenta de superusuario para tener acceso total al panel administrativo de Django.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/07_crear_superusuario.png}
+    \caption{Captura de la creación del superusuario de administración.}
+    \label{fig:p7_superuser}
+\end{figure}
+
+\subsection{Paso 8: Ejecución de la Suite de Pruebas Unitarias}
+Se verificó el correcto funcionamiento de todas las vistas CRUD y cálculos matemáticos ejecutando el comando de pruebas automatizadas \texttt{python manage.py test}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/08_ejecutar_pruebas.png}
+    \caption{Captura del test suite con 7 pruebas ejecutadas con éxito (100\% OK).}
+    \label{fig:p8_test}
+\end{figure}
+
+\subsection{Paso 9: Puesta en Marcha del Servidor de Desarrollo}
+Se inició el servidor web local en el puerto 8000 para habilitar la interfaz gráfica de usuario.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/09_arranque_servidor.png}
+    \caption{Captura del servidor de desarrollo Django activo en http://127.0.0.1:8000/.}
+    \label{fig:p9_runserver}
+\end{figure}
+
+\newpage
+
+% =========================================================================
+% SECCIÓN 4: VERIFICACIÓN VISUAL Y PRUEBAS DE FUNCIONAMIENTO (CRUD WEB)
+% =========================================================================
+\section{Verificación Visual y Pruebas de Funcionamiento (CRUD Web)}
+
+Esta sección documenta visualmente la interfaz de usuario en el navegador web para cada una de las funciones requeridas en el proyecto final: \textbf{Visualizar}, \textbf{Agregar}, \textbf{Editar} y \textbf{Borrar}.
+
+\subsection{Función: Visualizar (Dashboard Principal y Tabla de Registros)}
+La pantalla principal presenta:
+\begin{enumerate}
+    \item \textbf{Métricas Globales Agregadas:} Total de equipos, suma concurrente de núcleos cores, rendimiento acumulado en TeraFLOPS y almacenamiento total en Terabytes.
+    \item \textbf{Tarjetas de Podio TOP 3:} Destacando el 1º, 2º y 3º puesto mundial con insignias de honor.
+    \item \textbf{Tabla Detallada SQLite:} Listado tabular de todos los registros con botones de acción rápida.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.96\textwidth]{imagenes/10_web_dashboard.png}
+    \caption{Vista Web: Dashboard principal con métricas, podio y tabla de registros en SQLite.}
+    \label{fig:web_dashboard}
+\end{figure}
+
+\newpage
+\subsection{Función: Visualizar (Ficha Técnica Individual Detallada)}
+Al hacer clic en el botón \textbf{"Visualizar"} o en el nombre de cualquier computadora, se despliega la ficha técnica con tarjetas de conversión automática a PetaFLOPS, ExaFLOPS, Petabytes de RAM y metadatos de auditoría en la base de datos SQLite.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.96\textwidth]{imagenes/11_web_detalle.png}
+    \caption{Vista Web: Ficha técnica detallada de una supercomputadora.}
+    \label{fig:web_detalle}
+\end{figure}
+
+\newpage
+\subsection{Función: Agregar (Formulario de Nueva Supercomputadora)}
+Al seleccionar \textbf{"Agregar Registro"} o \textbf{"Nueva Supercomputadora"}, el usuario accede a un formulario con controles Bootstrap y validación en tiempo real. Todos los campos numéricos respetan rangos mínimos y admiten números de escala extrema (por ejemplo, más de 10 millones de cores).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.96\textwidth]{imagenes/12_web_agregar_formulario.png}
+    \caption{Vista Web: Formulario para agregar una nueva supercomputadora.}
+    \label{fig:web_agregar}
+\end{figure}
+
+\newpage
+\subsection{Función: Editar (Modificación de Especificaciones Técnicas)}
+La función de edición permite seleccionar un registro existente, cargando automáticamente sus valores actuales en el formulario para actualizar cores, memoria, almacenamiento o sistema operativo sin pérdida de integridad referencial.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.96\textwidth]{imagenes/13_web_editar_formulario.png}
+    \caption{Vista Web: Pantalla de edición de un registro existente.}
+    \label{fig:web_editar}
+\end{figure}
+
+\newpage
+\subsection{Función: Borrar (Confirmación Segura de Eliminación)}
+Para proteger la integridad de la base de datos contra borrados accidentales, la función de borrado presenta una vista de confirmación con los datos clave del equipo a eliminar antes de ejecutar la sentencia \texttt{DELETE} en SQLite.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{imagenes/14_web_confirmar_eliminar.png}
+    \caption{Vista Web: Pantalla de confirmación previa a la eliminación de un registro.}
+    \label{fig:web_eliminar}
+\end{figure}
+
+\newpage
+\subsection{Panel de Administración de Django}
+Django provee de manera predeterminada un robusto panel administrativo en \texttt{/admin}. Se configuró \texttt{admin.py} con filtros por país y sistema operativo, búsqueda en tiempo real y vista tabular.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{imagenes/15_web_admin_login.png}
+    \caption{Vista Web: Pantalla de autenticación en el panel de administración de Django.}
+    \label{fig:web_admin_login}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.96\textwidth]{imagenes/16_web_admin_listado.png}
+    \caption{Vista Web: Panel administrativo con filtros y listado de supercomputadoras.}
+    \label{fig:web_admin_listado}
+\end{figure}
+
+\newpage
+
+% =========================================================================
+% SECCIÓN 5: CÓDIGO FUENTE IMPLEMENTADO
+% =========================================================================
+\section{Código Fuente del Proyecto}
+
+\subsection{Modelo de Datos: \texttt{computadoras/models.py}}
+Define la tabla \texttt{computadoras\_supercomputadora} en SQLite cumpliendo con los 7 campos solicitados y propiedades de conversión de unidades de rendimiento.
+
+\begin{lstlisting}[language=Python, caption={Modelo Supercomputadora en models.py}]
+from django.db import models
+from django.urls import reverse
+from django.core.validators import MinValueValidator
+
+class Supercomputadora(models.Model):
+    nombre = models.CharField(
+        max_length=120, unique=True,
+        verbose_name="Nombre de la supercomputadora"
+    )
+    pais_origen = models.CharField(
+        max_length=100, verbose_name="País de origen"
+    )
+    numero_cores = models.PositiveBigIntegerField(
+        verbose_name="Número de cores",
+        validators=[MinValueValidator(1)]
+    )
+    ram_tb = models.DecimalField(
+        max_digits=12, decimal_places=2,
+        verbose_name="Cantidad de RAM (TB)",
+        validators=[MinValueValidator(0.01)]
+    )
+    almacenamiento_tb = models.DecimalField(
+        max_digits=14, decimal_places=2,
+        verbose_name="Almacenamiento (TB)",
+        validators=[MinValueValidator(0.01)]
+    )
+    teraflops = models.DecimalField(
+        max_digits=16, decimal_places=2,
+        verbose_name="Rendimiento (TeraFLOPS)",
+        validators=[MinValueValidator(0.01)]
+    )
+    sistema_operativo = models.CharField(
+        max_length=150, verbose_name="Sistema operativo"
+    )
+    fabricante = models.CharField(max_length=150, blank=True)
+    institucion = models.CharField(max_length=180, blank=True)
+    ranking_posicion = models.PositiveIntegerField(null=True, blank=True)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-teraflops", "ranking_posicion", "nombre"]
+
+    @property
+    def petaflops(self):
+        return float(self.teraflops) / 1000.0
+
+    @property
+    def exaflops(self):
+        return float(self.teraflops) / 1_000_000.0
+\end{lstlisting}
+
+\newpage
+\subsection{Formularios y Validación: \texttt{computadoras/forms.py}}
+Implementa el enlace entre el modelo de base de datos y los controles HTML con estilos de Bootstrap 5.
+
+\begin{lstlisting}[language=Python, caption={Formulario ModelForm en forms.py}]
+from django import forms
+from .models import Supercomputadora
+
+class SupercomputadoraForm(forms.ModelForm):
+    class Meta:
+        model = Supercomputadora
+        fields = [
+            "nombre", "pais_origen", "numero_cores",
+            "ram_tb", "almacenamiento_tb", "teraflops",
+            "sistema_operativo", "fabricante", "institucion",
+            "ranking_posicion"
+        ]
+        widgets = {
+            "nombre": forms.TextInput(attrs={"class": "form-control"}),
+            "pais_origen": forms.TextInput(attrs={"class": "form-control"}),
+            "numero_cores": forms.NumberInput(attrs={"class": "form-control", "min": "1"}),
+            "ram_tb": forms.NumberInput(attrs={"class": "form-control", "min": "0.01"}),
+            "almacenamiento_tb": forms.NumberInput(attrs={"class": "form-control", "min": "0.01"}),
+            "teraflops": forms.NumberInput(attrs={"class": "form-control", "min": "0.01"}),
+            "sistema_operativo": forms.TextInput(attrs={"class": "form-control"}),
+        }
+\end{lstlisting}
+
+\subsection{Vistas de Control: \texttt{computadoras/views.py}}
+Implementa las vistas basadas en clases (\textit{Class-Based Views}) para las operaciones CRUD y el cómputo de métricas concurrentes agregadas con el ORM de Django.
+
+\begin{lstlisting}[language=Python, caption={Vistas CRUD en views.py}]
+from django.urls import reverse_lazy
+from django.contrib import messages
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.db.models import Sum, Count, Max
+from .models import Supercomputadora
+from .forms import SupercomputadoraForm
+
+class SupercomputadoraListView(ListView):
+    model = Supercomputadora
+    template_name = "computadoras/lista.html"
+    context_object_name = "supercomputadoras"
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["stats"] = Supercomputadora.objects.aggregate(
+            total_equipos=Count("id"),
+            total_cores=Sum("numero_cores"),
+            total_ram=Sum("ram_tb"),
+            total_almacenamiento=Sum("almacenamiento_tb"),
+            total_teraflops=Sum("teraflops"),
+        )
+        return ctx
+
+class SupercomputadoraCreateView(CreateView):
+    model = Supercomputadora
+    form_class = SupercomputadoraForm
+    template_name = "computadoras/formulario.html"
+    success_url = reverse_lazy("computadoras:lista")
+
+class SupercomputadoraUpdateView(UpdateView):
+    model = Supercomputadora
+    form_class = SupercomputadoraForm
+    template_name = "computadoras/formulario.html"
+    success_url = reverse_lazy("computadoras:lista")
+
+class SupercomputadoraDeleteView(DeleteView):
+    model = Supercomputadora
+    template_name = "computadoras/confirmar_eliminar.html"
+    success_url = reverse_lazy("computadoras:lista")
+\end{lstlisting}
+
+\newpage
+\subsection{Enrutamiento: \texttt{computadoras/urls.py}}
+Configura las URLs y nombres de ruta para conectar el navegador con cada vista del CRUD.
+
+\begin{lstlisting}[language=Python, caption={URLs de la aplicación en computadoras/urls.py}]
+from django.urls import path
+from . import views
+
+app_name = "computadoras"
+
+urlpatterns = [
+    path("", views.SupercomputadoraListView.as_view(), name="lista"),
+    path("<int:pk>/", views.SupercomputadoraDetailView.as_view(), name="detalle"),
+    path("nueva/", views.SupercomputadoraCreateView.as_view(), name="crear"),
+    path("<int:pk>/editar/", views.SupercomputadoraUpdateView.as_view(), name="editar"),
+    path("<int:pk>/eliminar/", views.SupercomputadoraDeleteView.as_view(), name="eliminar"),
+]
+\end{lstlisting}
+
+% =========================================================================
+% SECCIÓN 6: CONCLUSIONES Y ENLACES
+% =========================================================================
+\section{Conclusiones y Referencias}
+
+\subsection{Conclusiones}
+\begin{enumerate}
+    \item \textbf{Eficiencia y Concurrencia de Datos:} El uso de Django junto a SQLite permitió una gestión ágil, relacional y consistente de la información de sistemas con más de 11 millones de núcleos de procesamiento y flujos petabyticos.
+    \item \textbf{Arquitectura Limpia MVT:} La arquitectura Modelo-Vista-Template de Django facilita el mantenimiento y escalabilidad, separando la lógica de presentación (Bootstrap 5) de la persistencia en base de datos.
+    \item \textbf{Cumplimiento Riguroso de Requisitos:} Las 4 operaciones solicitadas (\textit{Agregar}, \textit{Editar}, \textit{Borrar} y \textit{Visualizar}) fueron validadas satisfactoriamente tanto de manera manual como a través de pruebas unitarias automatizadas.
+\end{enumerate}
+
+\subsection{Enlaces de Interés y Bibliografía Consultada}
+\begin{itemize}
+    \item \textbf{TOP500 Supercomputers Project:} \url{https://top500.org/}
+    \item \textbf{Visual Studio Code:} \url{https://code.visualstudio.com/}
+    \item \textbf{Documentación Oficial de Django:} \url{https://docs.djangoproject.com/}
+    \item \textbf{¿Qué es Django y por qué importa? - Django y DRF:} \url{https://www.youtube.com/watch?v=B8OlRdYwNlA}
+    \item \textbf{Django Portafolio, Ejemplo Práctico:} \url{https://www.youtube.com/watch?v=zBjMF6je24U}
+    \item \textbf{Django REST Framework y React CRUD:} \url{https://www.youtube.com/watch?v=38XWpyEK8IY}
+    \item \textbf{Crea una agenda virtual con Django:} \url{https://www.youtube.com/watch?v=EQ-kqDmfUoM}
+\end{itemize}
+
+\end{document}

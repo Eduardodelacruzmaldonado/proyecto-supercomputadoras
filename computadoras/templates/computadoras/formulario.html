@@ -1,0 +1,155 @@
+{% extends "computadoras/base.html" %}
+
+{% block title %}{{ titulo_accion }} | SupercomputoDB{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Navegación de migas de pan -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'computadoras:lista' %}" class="text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ titulo_accion }}</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-5">
+                <div class="card-header bg-dark text-white p-4 d-flex align-items-center gap-3">
+                    <div class="icon-shape bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3">
+                        <i class="bi {{ icono_accion }}"></i>
+                    </div>
+                    <div>
+                        <h2 class="h4 fw-bold mb-1 text-white">{{ titulo_accion }}</h2>
+                        <p class="text-secondary small mb-0">
+                            Completa los campos requeridos para almacenar o actualizar los datos en SQLite.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    {% if form.errors %}
+                        <div class="alert alert-danger shadow-sm border-0 mb-4" role="alert">
+                            <h5 class="alert-heading fw-bold mb-2"><i class="bi bi-exclamation-octagon-fill me-2"></i>Errores en el formulario:</h5>
+                            <ul class="mb-0">
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li><strong>{{ field|title }}:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Sección 1: Datos de Identificación -->
+                        <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
+                            <i class="bi bi-info-circle-fill me-2"></i>1. Identificación y Origen
+                        </h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.nombre.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.nombre.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.nombre }}
+                                <div class="form-text text-muted">{{ form.nombre.help_text }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.pais_origen.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.pais_origen.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.pais_origen }}
+                                <div class="form-text text-muted">{{ form.pais_origen.help_text }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.institucion.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.institucion.label }}
+                                </label>
+                                {{ form.institucion }}
+                                <div class="form-text text-muted">{{ form.institucion.help_text }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.ranking_posicion.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.ranking_posicion.label }}
+                                </label>
+                                {{ form.ranking_posicion }}
+                                <div class="form-text text-muted">{{ form.ranking_posicion.help_text }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Sección 2: Especificaciones Técnicas y Rendimiento -->
+                        <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
+                            <i class="bi bi-cpu-fill me-2"></i>2. Rendimiento y Arquitectura Concurrente
+                        </h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.numero_cores.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.numero_cores.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.numero_cores }}
+                                <div class="form-text text-muted">{{ form.numero_cores.help_text }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.teraflops.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.teraflops.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.teraflops }}
+                                <div class="form-text text-muted">{{ form.teraflops.help_text }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.ram_tb.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.ram_tb.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.ram_tb }}
+                                <div class="form-text text-muted">{{ form.ram_tb.help_text }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.almacenamiento_tb.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.almacenamiento_tb.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.almacenamiento_tb }}
+                                <div class="form-text text-muted">{{ form.almacenamiento_tb.help_text }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Sección 3: Software y Fabricante -->
+                        <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
+                            <i class="bi bi-terminal-fill me-2"></i>3. Entorno de Software y Plataforma
+                        </h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.sistema_operativo.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.sistema_operativo.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.sistema_operativo }}
+                                <div class="form-text text-muted">{{ form.sistema_operativo.help_text }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.fabricante.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.fabricante.label }}
+                                </label>
+                                {{ form.fabricante }}
+                                <div class="form-text text-muted">{{ form.fabricante.help_text }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                            <a href="{% url 'computadoras:lista' %}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-x-circle me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                                <i class="bi bi-check-circle-fill me-1"></i>{{ boton_texto }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
