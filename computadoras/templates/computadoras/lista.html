@@ -1,146 +1,116 @@
 {% extends "computadoras/base.html" %}
 {% load humanize %}
 
-{% block title %}Dashboard | Top Supercomputadoras del Mundo{% endblock %}
+{% block title %}Catálogo de Supercomputadoras | Computación Concurrente{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
 
-    <!-- Hero Header -->
+    <!-- Cabecera de la seccion -->
     <div class="row align-items-center mb-4">
         <div class="col-lg-8">
-            <h1 class="display-6 fw-bold text-dark mb-1">
-                <i class="bi bi-speedometer2 text-primary me-2"></i>Top Supercomputadoras del Mundo
+            <h1 class="h2 fw-bold text-dark mb-1">
+                Catálogo de Supercomputadoras de Alto Rendimiento
             </h1>
-            <p class="text-secondary lead fs-6 mb-0">
-                Gestión y visualización de los sistemas de cómputo de alto rendimiento y arquitectura paralela más potentes del planeta en SQLite con Django.
+            <p class="text-muted mb-0">
+                Sistemas de computación a exaescala y concurrencia masiva (TOP500) registrados en base de datos SQLite con Django.
             </p>
         </div>
         <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-            <a href="{% url 'computadoras:crear' %}" class="btn btn-primary btn-lg shadow-sm px-4 fw-semibold">
-                <i class="bi bi-plus-circle-fill me-2"></i>Agregar Supercomputadora
+            <a href="{% url 'computadoras:crear' %}" class="btn btn-primary shadow-sm px-4">
+                <i class="bi bi-plus-circle me-1"></i> Registrar Supercomputadora
             </a>
         </div>
     </div>
 
-    <!-- Tarjetas de Métricas Globales -->
+    <!-- Metricas agregadas -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="icon-shape bg-primary bg-opacity-10 text-primary rounded-3 p-3 fs-3">
-                        <i class="bi bi-hdd-network-fill"></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small fw-semibold text-uppercase">Equipos</span>
-                        <h3 class="fw-bold mb-0 text-dark">{{ stats.total_equipos|default:"0" }}</h3>
-                        <small class="text-muted font-monospace">en base de datos</small>
-                    </div>
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white">
+                <div class="card-body p-3">
+                    <span class="text-muted small text-uppercase fw-semibold d-block">Sistemas en BD</span>
+                    <h3 class="fw-bold mb-0 text-dark">{{ stats.total_equipos|default:"0" }}</h3>
+                    <small class="text-muted">registros activos</small>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="icon-shape bg-success bg-opacity-10 text-success rounded-3 p-3 fs-3">
-                        <i class="bi bi-cpu"></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small fw-semibold text-uppercase">Núcleos Cores</span>
-                        <h3 class="fw-bold mb-0 text-dark">{{ stats.total_cores|default:"0"|intcomma }}</h3>
-                        <small class="text-muted font-monospace">concurrencia total</small>
-                    </div>
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white">
+                <div class="card-body p-3">
+                    <span class="text-muted small text-uppercase fw-semibold d-block">Cores Totales</span>
+                    <h3 class="fw-bold mb-0 text-primary">{{ stats.total_cores|default:"0"|intcomma }}</h3>
+                    <small class="text-muted">núcleos concurrentes</small>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="icon-shape bg-danger bg-opacity-10 text-danger rounded-3 p-3 fs-3">
-                        <i class="bi bi-lightning-charge-fill"></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small fw-semibold text-uppercase">Rendimiento</span>
-                        <h3 class="fw-bold mb-0 text-dark">{{ stats.total_teraflops|default:"0"|floatformat:0 }}</h3>
-                        <small class="text-muted font-monospace">TeraFLOPS acumulados</small>
-                    </div>
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white">
+                <div class="card-body p-3">
+                    <span class="text-muted small text-uppercase fw-semibold d-block">TeraFLOPS Totales</span>
+                    <h3 class="fw-bold mb-0 text-danger">{{ stats.total_teraflops|default:"0"|floatformat:0 }}</h3>
+                    <small class="text-muted">cálculo acumulado</small>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="icon-shape bg-info bg-opacity-10 text-info rounded-3 p-3 fs-3">
-                        <i class="bi bi-database-fill"></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small fw-semibold text-uppercase">Almacenamiento</span>
-                        <h3 class="fw-bold mb-0 text-dark">{{ stats.total_almacenamiento|default:"0"|floatformat:0 }}</h3>
-                        <small class="text-muted font-monospace">Terabytes (TB)</small>
-                    </div>
+            <div class="card border-0 shadow-sm rounded-3 h-100 bg-white">
+                <div class="card-body p-3">
+                    <span class="text-muted small text-uppercase fw-semibold d-block">Almacenamiento Total</span>
+                    <h3 class="fw-bold mb-0 text-info">{{ stats.total_almacenamiento|default:"0"|floatformat:0 }} TB</h3>
+                    <small class="text-muted">capacidad paralela</small>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tarjetas de Podio / Destacadas -->
+    <!-- Tarjetas destacadas de los 3 primeros lugares -->
     {% if supercomputadoras %}
     <div class="row g-4 mb-4">
         {% for comp in supercomputadoras|slice:":3" %}
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden card-hover position-relative">
+            <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
                 <div class="card-header bg-dark text-white p-3 border-0 d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center gap-2">
-                        {% if forloop.counter == 1 %}
-                            <span class="badge bg-warning text-dark fs-6 px-3 py-1 rounded-pill fw-bold"><i class="bi bi-trophy-fill me-1"></i>#1 Mundial</span>
-                        {% elif forloop.counter == 2 %}
-                            <span class="badge bg-secondary text-white fs-6 px-3 py-1 rounded-pill fw-bold"><i class="bi bi-award-fill me-1"></i>#2 Mundial</span>
-                        {% elif forloop.counter == 3 %}
-                            <span class="badge bg-danger text-white fs-6 px-3 py-1 rounded-pill fw-bold"><i class="bi bi-award-fill me-1"></i>#3 Mundial</span>
-                        {% else %}
-                            <span class="badge bg-primary text-white fs-6 px-3 py-1 rounded-pill fw-bold">#{{ forloop.counter }}</span>
-                        {% endif %}
-                    </div>
-                    <span class="badge bg-white bg-opacity-10 text-white font-monospace">{{ comp.pais_origen }}</span>
+                    <span class="badge {% if forloop.counter == 1 %}bg-warning text-dark{% elif forloop.counter == 2 %}bg-secondary{% else %}bg-danger{% endif %} px-3 py-1 rounded-pill fw-bold">
+                        #{{ comp.ranking_posicion|default:forloop.counter }} TOP500
+                    </span>
+                    <span class="badge bg-secondary bg-opacity-50 text-white">{{ comp.pais_origen }}</span>
                 </div>
-                <div class="card-body p-4 bg-white">
-                    <h3 class="h4 fw-bold text-dark mb-1">{{ comp.nombre }}</h3>
-                    <p class="text-muted small mb-3">
-                        <i class="bi bi-building me-1"></i>{{ comp.institucion|default:"Centro de Cómputo Avanzado" }}
-                    </p>
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-dark mb-1">{{ comp.nombre }}</h4>
+                    <p class="text-muted small mb-3">{{ comp.institucion|default:"Centro de Cómputo Avanzado" }}</p>
 
-                    <div class="p-3 bg-light rounded-3 mb-3 border">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-secondary small fw-medium"><i class="bi bi-speedometer text-danger me-1"></i>TeraFLOPS:</span>
-                            <span class="fw-bold font-monospace text-danger fs-5">{{ comp.teraflops|floatformat:2 }}</span>
+                    <div class="bg-light p-3 rounded-3 mb-3 border">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Rendimiento:</span>
+                            <span class="fw-bold font-monospace text-danger">{{ comp.teraflops|floatformat:2 }} TFLOPS</span>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-secondary small fw-medium"><i class="bi bi-cpu text-primary me-1"></i>Núcleos Cores:</span>
-                            <span class="fw-bold font-monospace text-dark">{{ comp.numero_cores }}</span>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Cores:</span>
+                            <span class="font-monospace fw-semibold">{{ comp.numero_cores|intcomma }}</span>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-secondary small fw-medium"><i class="bi bi-memory text-success me-1"></i>RAM (TB):</span>
-                            <span class="fw-bold font-monospace text-dark">{{ comp.ram_tb }} TB</span>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Memoria RAM:</span>
+                            <span class="font-monospace">{{ comp.ram_tb }} TB</span>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-secondary small fw-medium"><i class="bi bi-disc text-info me-1"></i>Almacenamiento:</span>
-                            <span class="fw-bold font-monospace text-dark">{{ comp.almacenamiento_tb }} TB</span>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted small">Almacenamiento:</span>
+                            <span class="font-monospace">{{ comp.almacenamiento_tb }} TB</span>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-secondary small fw-medium"><i class="bi bi-terminal text-dark me-1"></i>Sistema Operativo:</span>
-                            <span class="badge bg-secondary bg-opacity-15 text-dark small">{{ comp.sistema_operativo|truncatechars:28 }}</span>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">Sistema Operativo:</span>
+                            <span class="small text-truncate" style="max-width: 170px;">{{ comp.sistema_operativo }}</span>
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center gap-2 pt-2 border-top">
                         <a href="{% url 'computadoras:detalle' comp.pk %}" class="btn btn-outline-primary btn-sm flex-grow-1">
-                            <i class="bi bi-eye-fill me-1"></i>Visualizar
+                            <i class="bi bi-eye me-1"></i> Ficha Técnica
                         </a>
-                        <a href="{% url 'computadoras:editar' comp.pk %}" class="btn btn-outline-warning btn-sm">
-                            <i class="bi bi-pencil-square"></i>
+                        <a href="{% url 'computadoras:editar' comp.pk %}" class="btn btn-outline-secondary btn-sm" title="Editar">
+                            <i class="bi bi-pencil"></i>
                         </a>
-                        <a href="{% url 'computadoras:eliminar' comp.pk %}" class="btn btn-outline-danger btn-sm">
-                            <i class="bi bi-trash-fill"></i>
+                        <a href="{% url 'computadoras:eliminar' comp.pk %}" class="btn btn-outline-danger btn-sm" title="Eliminar">
+                            <i class="bi bi-trash"></i>
                         </a>
                     </div>
                 </div>
@@ -150,19 +120,19 @@
     </div>
     {% endif %}
 
-    <!-- Tabla Completa de Registros en SQLite -->
+    <!-- Tabla completa de registros en SQLite -->
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4">
         <div class="card-header bg-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center">
             <h5 class="fw-bold text-dark mb-0">
-                <i class="bi bi-table text-primary me-2"></i>Base de Datos SQLite: Registros de Supercomputadoras
+                Registros en la Base de Datos SQLite
             </h5>
-            <span class="badge bg-primary px-3 py-2 rounded-pill font-monospace">{{ supercomputadoras.count }} registros</span>
+            <span class="badge bg-secondary px-3 py-2 rounded-pill font-monospace">{{ supercomputadoras.count }} sistemas</span>
         </div>
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light text-secondary text-uppercase small font-monospace">
                     <tr>
-                        <th scope="col" class="ps-4">#</th>
+                        <th scope="col" class="ps-4">Rank</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">País</th>
                         <th scope="col" class="text-end">Cores</th>
@@ -188,24 +158,22 @@
                         <td>
                             <span class="badge bg-light text-dark border">{{ comp.pais_origen }}</span>
                         </td>
-                        <td class="text-end font-monospace fw-semibold">{{ comp.numero_cores }}</td>
+                        <td class="text-end font-monospace">{{ comp.numero_cores|intcomma }}</td>
                         <td class="text-end font-monospace">{{ comp.ram_tb }} TB</td>
                         <td class="text-end font-monospace">{{ comp.almacenamiento_tb }} TB</td>
                         <td class="text-end font-monospace fw-bold text-danger">{{ comp.teraflops }}</td>
                         <td>
-                            <span class="badge bg-secondary bg-opacity-10 text-dark font-monospace small">
-                                {{ comp.sistema_operativo }}
-                            </span>
+                            <span class="small font-monospace text-secondary">{{ comp.sistema_operativo|truncatechars:32 }}</span>
                         </td>
                         <td class="text-center pe-4">
                             <div class="btn-group btn-group-sm" role="group">
-                                <a href="{% url 'computadoras:detalle' comp.pk %}" class="btn btn-outline-primary" title="Visualizar ficha técnica">
+                                <a href="{% url 'computadoras:detalle' comp.pk %}" class="btn btn-outline-primary" title="Ver detalle">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'computadoras:editar' comp.pk %}" class="btn btn-outline-warning" title="Editar">
+                                <a href="{% url 'computadoras:editar' comp.pk %}" class="btn btn-outline-secondary" title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{% url 'computadoras:eliminar' comp.pk %}" class="btn btn-outline-danger" title="Borrar">
+                                <a href="{% url 'computadoras:eliminar' comp.pk %}" class="btn btn-outline-danger" title="Eliminar">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
@@ -214,11 +182,9 @@
                     {% empty %}
                     <tr>
                         <td colspan="9" class="text-center py-5 text-muted">
-                            <i class="bi bi-database-x fs-1 d-block mb-3 text-secondary"></i>
-                            <h5>No hay supercomputadoras registradas todavía</h5>
-                            <p class="small mb-3">Haz clic en el botón de abajo para registrar la primera supercomputadora.</p>
+                            <p class="mb-2">No hay supercomputadoras registradas en la base de datos.</p>
                             <a href="{% url 'computadoras:crear' %}" class="btn btn-primary btn-sm">
-                                <i class="bi bi-plus-circle me-1"></i>Agregar Registro
+                                Registrar la primera supercomputadora
                             </a>
                         </td>
                     </tr>

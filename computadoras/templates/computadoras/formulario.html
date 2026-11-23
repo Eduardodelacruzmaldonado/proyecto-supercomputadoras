@@ -1,14 +1,14 @@
 {% extends "computadoras/base.html" %}
 
-{% block title %}{{ titulo_accion }} | SupercomputoDB{% endblock %}
+{% block title %}{{ titulo_accion }} | SupercómputoDB{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
 
-    <!-- Navegación de migas de pan -->
+    <!-- Migas de pan -->
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'computadoras:lista' %}" class="text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'computadoras:lista' %}" class="text-decoration-none">Listado</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ titulo_accion }}</li>
         </ol>
     </nav>
@@ -16,22 +16,17 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-5">
-                <div class="card-header bg-dark text-white p-4 d-flex align-items-center gap-3">
-                    <div class="icon-shape bg-primary bg-opacity-25 text-primary rounded-3 p-3 fs-3">
-                        <i class="bi {{ icono_accion }}"></i>
-                    </div>
-                    <div>
-                        <h2 class="h4 fw-bold mb-1 text-white">{{ titulo_accion }}</h2>
-                        <p class="text-secondary small mb-0">
-                            Completa los campos requeridos para almacenar o actualizar los datos en SQLite.
-                        </p>
-                    </div>
+                <div class="card-header bg-dark text-white p-4">
+                    <h3 class="h4 fw-bold mb-1">{{ titulo_accion }}</h3>
+                    <p class="text-secondary small mb-0">
+                        Ingresa los parámetros técnicos para almacenar o actualizar la información en la base de datos SQLite.
+                    </p>
                 </div>
 
                 <div class="card-body p-4 p-md-5">
                     {% if form.errors %}
-                        <div class="alert alert-danger shadow-sm border-0 mb-4" role="alert">
-                            <h5 class="alert-heading fw-bold mb-2"><i class="bi bi-exclamation-octagon-fill me-2"></i>Errores en el formulario:</h5>
+                        <div class="alert alert-danger mb-4" role="alert">
+                            <h6 class="alert-heading fw-bold mb-2">Por favor corrige los siguientes errores:</h6>
                             <ul class="mb-0">
                                 {% for field, errors in form.errors.items %}
                                     {% for error in errors %}
@@ -45,10 +40,8 @@
                     <form method="post" novalidate>
                         {% csrf_token %}
 
-                        <!-- Sección 1: Datos de Identificación -->
-                        <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
-                            <i class="bi bi-info-circle-fill me-2"></i>1. Identificación y Origen
-                        </h5>
+                        <!-- Grupo 1: Identificacion -->
+                        <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom">1. Identificación del Sistema</h5>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <label for="{{ form.nombre.id_for_label }}" class="form-label fw-semibold">
@@ -80,10 +73,8 @@
                             </div>
                         </div>
 
-                        <!-- Sección 2: Especificaciones Técnicas y Rendimiento -->
-                        <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
-                            <i class="bi bi-cpu-fill me-2"></i>2. Rendimiento y Arquitectura Concurrente
-                        </h5>
+                        <!-- Grupo 2: Parametros de Concurrencia y Rendimiento -->
+                        <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom">2. Rendimiento y Concurrencia</h5>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <label for="{{ form.numero_cores.id_for_label }}" class="form-label fw-semibold">
@@ -115,10 +106,8 @@
                             </div>
                         </div>
 
-                        <!-- Sección 3: Software y Fabricante -->
-                        <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
-                            <i class="bi bi-terminal-fill me-2"></i>3. Entorno de Software y Plataforma
-                        </h5>
+                        <!-- Grupo 3: Sistema Operativo y Fabricante -->
+                        <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom">3. Plataforma de Software y Fabricante</h5>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <label for="{{ form.sistema_operativo.id_for_label }}" class="form-label fw-semibold">
@@ -136,13 +125,13 @@
                             </div>
                         </div>
 
-                        <!-- Botones de Acción -->
+                        <!-- Botones -->
                         <div class="d-flex justify-content-end gap-2 pt-3 border-top">
                             <a href="{% url 'computadoras:lista' %}" class="btn btn-outline-secondary px-4">
-                                <i class="bi bi-x-circle me-1"></i>Cancelar
+                                Cancelar
                             </a>
-                            <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
-                                <i class="bi bi-check-circle-fill me-1"></i>{{ boton_texto }}
+                            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                                {{ boton_texto }}
                             </button>
                         </div>
                     </form>

@@ -33,7 +33,7 @@ class SupercomputadoraAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Especificaciones Técnicas (Requeridas)",
+            "Especificaciones Técnicas (Campos Requeridos)",
             {
                 "fields": (
                     "numero_cores",
@@ -45,7 +45,7 @@ class SupercomputadoraAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Metadatos del Sistema",
+            "Metadatos y Auditoría",
             {
                 "classes": ("collapse",),
                 "fields": ("fecha_registro", "fecha_actualizacion"),

@@ -23,6 +23,7 @@ class SupercomputadoraModelTest(TestCase):
         self.assertEqual(str(self.comp), "Fugaku (Japón) - 442,010.00 TFLOPS")
 
     def test_propiedades_calculadas(self):
+        # Verificacion de conversiones de unidades
         self.assertAlmostEqual(self.comp.petaflops, 442.01, places=2)
         self.assertAlmostEqual(self.comp.exaflops, 0.442, places=3)
         self.assertAlmostEqual(self.comp.ram_petabytes, 4.85, places=2)
@@ -44,21 +45,21 @@ class SupercomputadoraCRUDViewsTest(TestCase):
         )
 
     def test_visualizar_listado(self):
-        """Verifica la función Visualizar (Listado general)"""
+        """Verifica que la vista de catalogo responde con codigo 200 y lista el equipo."""
         response = self.client.get(reverse("computadoras:lista"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Frontier")
         self.assertContains(response, "Estados Unidos")
 
     def test_visualizar_detalle(self):
-        """Verifica la función Visualizar (Detalle de una supercomputadora)"""
+        """Verifica la ficha tecnica individual."""
         response = self.client.get(reverse("computadoras:detalle", kwargs={"pk": self.comp.pk}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Frontier")
         self.assertContains(response, "HPE Cray OS")
 
     def test_agregar_supercomputadora(self):
-        """Verifica la función Agregar (Create)"""
+        """Prueba la operacion de creacion via formulario POST."""
         data = {
             "nombre": "Aurora",
             "pais_origen": "Estados Unidos",
@@ -72,11 +73,11 @@ class SupercomputadoraCRUDViewsTest(TestCase):
             "ranking_posicion": 3,
         }
         response = self.client.post(reverse("computadoras:crear"), data)
-        self.assertEqual(response.status_code, 302)  # Redirección exitosa
+        self.assertEqual(response.status_code, 302)  # Redireccion tras insercion exitosa
         self.assertTrue(Supercomputadora.objects.filter(nombre="Aurora").exists())
 
     def test_editar_supercomputadora(self):
-        """Verifica la función Editar (Update)"""
+        """Prueba la actualizacion de campos en un registro existente."""
         data = {
             "nombre": "Frontier Modificado",
             "pais_origen": "Estados Unidos",
@@ -94,7 +95,7 @@ class SupercomputadoraCRUDViewsTest(TestCase):
         self.assertEqual(self.comp.numero_cores, 9100000)
 
     def test_borrar_supercomputadora(self):
-        """Verifica la función Borrar (Delete)"""
+        """Prueba la eliminacion fisica del registro en base de datos."""
         pk = self.comp.pk
         response = self.client.post(reverse("computadoras:eliminar", kwargs={"pk": pk}))
         self.assertEqual(response.status_code, 302)

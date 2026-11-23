@@ -15,8 +15,8 @@ from .forms import SupercomputadoraForm
 
 class SupercomputadoraListView(ListView):
     """
-    Función: Visualizar (Listado general y Dashboard)
-    Muestra la lista de las supercomputadoras registradas junto con métricas agregadas.
+    Vista principal del catalogo: lista todos los registros y calcula
+    totales acumulados de cores, rendimiento y almacenamiento directo en SQLite.
     """
 
     model = Supercomputadora
@@ -25,8 +25,8 @@ class SupercomputadoraListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Métricas concurrentes y agregadas para la presentación
-        estadisticas = Supercomputadora.objects.aggregate(
+        # Agregaciones a nivel de base de datos
+        context["stats"] = Supercomputadora.objects.aggregate(
             total_equipos=Count("id"),
             total_cores=Sum("numero_cores"),
             total_ram=Sum("ram_tb"),
@@ -34,14 +34,11 @@ class SupercomputadoraListView(ListView):
             total_teraflops=Sum("teraflops"),
             max_teraflops=Max("teraflops"),
         )
-        context["stats"] = estadisticas
         return context
 
 
 class SupercomputadoraDetailView(DetailView):
-    """
-    Función: Visualizar (Ficha técnica detallada de una supercomputadora)
-    """
+    """Muestra la ficha tecnica detallada de una supercomputadora especifica."""
 
     model = Supercomputadora
     template_name = "computadoras/detalle.html"
@@ -49,9 +46,7 @@ class SupercomputadoraDetailView(DetailView):
 
 
 class SupercomputadoraCreateView(CreateView):
-    """
-    Función: Agregar (Creación de un nuevo registro)
-    """
+    """Formulario para agregar un nuevo registro a la base de datos."""
 
     model = Supercomputadora
     form_class = SupercomputadoraForm
@@ -61,22 +56,20 @@ class SupercomputadoraCreateView(CreateView):
     def form_valid(self, form):
         messages.success(
             self.request,
-            f"¡Supercomputadora '{form.cleaned_data['nombre']}' registrada con éxito en la base de datos!",
+            f"Supercomputadora '{form.cleaned_data['nombre']}' registrada con éxito.",
         )
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["titulo_accion"] = "Registrar Nueva Supercomputadora"
-        context["boton_texto"] = "Guardar en Base de Datos"
+        context["titulo_accion"] = "Registrar Supercomputadora"
+        context["boton_texto"] = "Guardar Registro"
         context["icono_accion"] = "bi-plus-circle"
         return context
 
 
 class SupercomputadoraUpdateView(UpdateView):
-    """
-    Función: Editar (Modificación de especificaciones de una supercomputadora)
-    """
+    """Formulario para editar especificaciones de un registro existente."""
 
     model = Supercomputadora
     form_class = SupercomputadoraForm
@@ -86,22 +79,20 @@ class SupercomputadoraUpdateView(UpdateView):
     def form_valid(self, form):
         messages.info(
             self.request,
-            f"¡La supercomputadora '{form.cleaned_data['nombre']}' fue actualizada correctamente!",
+            f"La información de '{form.cleaned_data['nombre']}' ha sido actualizada.",
         )
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["titulo_accion"] = f"Editar Especificaciones: {self.object.nombre}"
-        context["boton_texto"] = "Actualizar Registro"
+        context["titulo_accion"] = f"Editar: {self.object.nombre}"
+        context["boton_texto"] = "Guardar Cambios"
         context["icono_accion"] = "bi-pencil-square"
         return context
 
 
 class SupercomputadoraDeleteView(DeleteView):
-    """
-    Función: Borrar (Eliminación segura con pantalla de confirmación)
-    """
+    """Elimina el registro de la base de datos previa confirmacion del usuario."""
 
     model = Supercomputadora
     template_name = "computadoras/confirmar_eliminar.html"
@@ -112,13 +103,13 @@ class SupercomputadoraDeleteView(DeleteView):
         nombre = self.object.nombre
         messages.warning(
             self.request,
-            f"La supercomputadora '{nombre}' ha sido eliminada permanentemente de la base de datos.",
+            f"El registro de '{nombre}' fue eliminado de la base de datos.",
         )
         return super().form_valid(form)
 
 
 def auto_login_admin(request):
-    """Vista utilitaria para previsualización directa del panel administrativo"""
+    """Acceso directo de apoyo para previsualizar el panel administrativo."""
     from django.contrib.auth import login
     from django.contrib.auth.models import User
     user = User.objects.filter(username="admin").first()

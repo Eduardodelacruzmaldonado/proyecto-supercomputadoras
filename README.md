@@ -1,93 +1,163 @@
-# Proyecto Final: Creación de una Base de Datos con Acceso Web usando Django en Python
+# Proyecto Final: Base de Datos SQLite con Acceso Web en Django
+
 **Licenciatura en Ciencia de Datos**  
-**Materia:** Computación Concurrente  
+**Asignatura:** Computación Concurrente  
 **Docente:** Esp. Adrián Durán Chavesti  
-**Valor:** 10 puntos  
+**Ponderación:** 10 puntos (Exposición y Pruebas)
 
 ---
 
-## 🚀 Descripción del Proyecto
-Este proyecto implementa una aplicación web con el framework **Django** y base de datos relacional **SQLite**, destinada a la gestión y visualización de las especificaciones técnicas de las **3 computadoras más rápidas del mundo** (sistemas de computación concurrente a exaescala según el ranking TOP500):
-1. **El Capitan** (Estados Unidos - 1.809 ExaFLOPS / 11.34 millones de cores)
-2. **Frontier** (Estados Unidos - 1.353 ExaFLOPS / 9.06 millones de cores)
-3. **Aurora** (Estados Unidos - 1.012 ExaFLOPS / 9.26 millones de cores)
+## 1. Descripción del Proyecto
+
+Este proyecto consiste en el desarrollo de una aplicación web construida con el framework **Django** y base de datos relacional **SQLite**, diseñada para registrar, gestionar y consultar las especificaciones técnicas de las **3 computadoras más rápidas del mundo** registradas en el ranking global TOP500:
+
+1. **El Capitan** (Estados Unidos — 1.809 ExaFLOPS / 11,340,000 cores concurrentes)
+2. **Frontier** (Estados Unidos — 1.353 ExaFLOPS / 9,066,176 cores concurrentes)
+3. **Aurora** (Estados Unidos — 1.012 ExaFLOPS / 9,264,128 cores concurrentes)
+
+El proyecto aborda la computación concurrente desde dos perspectivas complementarias:
+- **Concurrencia en la arquitectura de hardware:** Estudio de sistemas distribuidos a exaescala donde millones de núcleos (CPU y aceleradores GPU) computan simultáneamente mediante modelos híbridos de memoria (MPI + OpenMP / HIP / SYCL).
+- **Concurrencia en el software y persistencia:** Análisis del comportamiento del motor SQLite y del servidor Django ante múltiples peticiones HTTP, el uso de cerrojos compartidos y exclusivos, y la implementación completa de las operaciones de persistencia **CRUD** (Crear, Leer, Actualizar y Eliminar).
 
 ---
 
-## 📋 Requerimientos y Cumplimiento de la Consigna
+## 2. Requerimientos de la Base de Datos
 
-### 1. Parámetros de la Base de Datos SQLite (7 campos obligatorios):
-- **Nombre:** Identificador del supercomputador (p. ej. *El Capitan*).
-- **País de origen:** País sede del centro de supercómputo.
-- **Número de cores:** Concurrencia masiva de núcleos de procesamiento (CPU + GPUs/Aceleradores).
-- **Cantidad de RAM (TB):** Memoria principal en Terabytes (con cálculo automático en Petabytes).
-- **Almacenamiento (TB):** Capacidad en Terabytes.
-- **TeraFLOPS:** Rendimiento de cálculo en coma flotante (con conversión a PFLOPS y EFLOPS).
-- **Sistema operativo:** Plataforma de software base (ej. *TOSS / RHEL*, *HPE Cray OS*, *SUSE Linux*).
+El modelo de datos relacional almacena los **7 campos obligatorios** solicitados en la rúbrica de evaluación:
 
-### 2. Funcionalidades CRUD Implementadas:
-- [x] **a. Agregar:** Formulario web con validaciones y estilos Bootstrap 5 para dar de alta nuevos registros.
-- [x] **b. Editar:** Actualización en tiempo real de cualquier especificación técnica.
-- [x] **c. Borrar:** Eliminación física en SQLite con diálogo de confirmación previa para prevenir pérdidas accidentales.
-- [x] **d. Visualizar:** Dashboard interactivo con tarjetas de podio, métricas agregadas globales y ficha técnica detallada por supercomputadora.
-- [x] **e. Panel de Administración Django:** Acceso a `/admin/` para auditoría, búsqueda y filtros avanzados.
+| Campo | Tipo de Dato en Django | Justificación Técnica |
+| :--- | :--- | :--- |
+| **Nombre** | `CharField(max_length=120, unique=True)` | Identificador unívoco del sistema de supercómputo. |
+| **País de origen** | `CharField(max_length=100)` | País donde se encuentra instalado el centro de cómputo. |
+| **Número de cores** | `PositiveBigIntegerField` | Conteo total de núcleos concurrentes (CPU + aceleradores). Se usa un entero de 64 bits para soportar valores de exaescala (más de 11 millones de núcleos) sin desbordamiento. |
+| **Cantidad de RAM (TB)** | `DecimalField(max_digits=12, decimal_places=2)` | Memoria RAM distribuida en Terabytes. Se emplea DecimalField para evitar errores de coma flotante binaria. |
+| **Almacenamiento (TB)** | `DecimalField(max_digits=14, decimal_places=2)` | Capacidad total de almacenamiento paralelo en Terabytes. |
+| **TeraFLOPS** | `DecimalField(max_digits=16, decimal_places=2)` | Rendimiento medido en billones de operaciones de punto flotante por segundo (FP64 Linpack). |
+| **Sistema operativo** | `CharField(max_length=150)` | Distribución Linux especializada para computación concurrente (TOSS, HPE Cray OS, SUSE). |
+
+Adicionalmente, el modelo incluye campos complementarios opcionales (`fabricante`, `institucion`, `ranking_posicion`, `fecha_registro`, `fecha_actualizacion`) y propiedades calculadas dinámicamente en memoria (`petaflops`, `exaflops`, `ram_petabytes`, `almacenamiento_petabytes`) para convertir automáticamente las magnitudes a órdenes de escala superiores.
 
 ---
 
-## 🛠️ Instrucciones de Instalación y Ejecución
+## 3. Funcionalidades del Sistema Web (CRUD)
 
-### 1. Clonar o abrir el directorio en VS Code
-Abre la carpeta `proyecto_supercomputadoras` en Visual Studio Code.
+La aplicación implementa las cuatro operaciones fundamentales mediante vistas genéricas basadas en clases (*Class-Based Views*):
 
-### 2. Instalar dependencias
+- **Visualizar (Read):**
+  - **Listado general:** Tabla con todos los sistemas registrados y cálculo agregado en tiempo real mediante `aggregate()` (total de cores concurrentes, TeraFLOPS acumulados y almacenamiento en disco).
+  - **Ficha técnica:** Vista de detalle individual con la conversión de unidades y datos de auditoría de la base de datos.
+- **Agregar (Create):** Formulario web validado tanto en el cliente como en el servidor (`ModelForm`), con protección CSRF y estilos de Bootstrap 5.
+- **Editar (Update):** Modificación de las especificaciones de cualquier supercomputadora con los datos existentes precargados.
+- **Borrar (Delete):** Eliminación física del registro en SQLite requiriendo confirmación expresa mediante petición HTTP POST.
+- **Panel Administrativo Oficial:** Mapeo del modelo en el administrador de Django (`/admin/`), con filtros laterales, buscador y auditoría de cambios.
+
+---
+
+## 4. Instrucciones de Instalación y Ejecución
+
+### 1. Requisitos Previos
+- Python 3.10 o superior instalado.
+- Visual Studio Code o terminal de comandos.
+
+### 2. Instalación del framework Django
+Desde la raíz del proyecto, ejecuta:
 ```bash
 py -m pip install django
 ```
 
-### 3. Aplicar migraciones a SQLite
+### 3. Aplicar las migraciones a la base de datos SQLite
 ```bash
 py manage.py migrate
 ```
 
-### 4. Cargar las 3 supercomputadoras más rápidas del mundo
-Ejecuta el comando personalizado incluido en el proyecto:
+### 4. Cargar los datos iniciales de las 3 supercomputadoras
+Se incluye un comando personalizado de Django que puebla la tabla con los datos reales del TOP500:
 ```bash
 py manage.py poblar_datos
 ```
 
-### 5. Iniciar el servidor web
-```bash
-py manage.py runserver
-```
-Abre en tu navegador: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-
-### 6. Acceso al Panel de Administración
-- URL: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
-- **Usuario:** `admin`
-- **Contraseña:** `admin123`
-
-### 7. Ejecutar las pruebas unitarias automatizadas
-Para comprobar que el 100% de las funciones operan correctamente:
+### 5. Ejecutar la suite de pruebas automatizadas
+Para comprobar que los modelos, conversiones y rutas del CRUD responden correctamente:
 ```bash
 py manage.py test
 ```
 
+### 6. Iniciar el servidor web de desarrollo
+```bash
+py manage.py runserver
+```
+Abre tu navegador en: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+### 7. Acceso al Panel de Administración
+- URL: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+- **Usuario:** `admin`
+- **Contraseña:** `admin123`
+
 ---
 
-## 📄 Documentación en LaTeX y PDF Generado
-En la carpeta `documentacion_latex/` encontrarás:
-- `reporte_proyecto.tex`: Código fuente en formato LaTeX listo para compilar o abrir en Overleaf.
-- `Proyecto_Final_Computacion_Concurrente_Django.pdf`: Documento de 14 páginas compilado con todas las capturas de pantalla de terminales y vistas web.
-- `imagenes/`: Carpeta con las 16 capturas de pantalla de alta resolución (comandos, migraciones, pruebas y vistas web).
-- `generar_capturas.py`: Script para regenerar todas las capturas de pantalla de forma automatizada.
-- `generar_pdf_reporte.py`: Script generador del PDF con tipografía Unicode.
+## 5. Estructura del Directorio
+
+```text
+proyecto_supercomputadoras/
+├── manage.py
+├── db.sqlite3
+├── requirements.txt
+├── README.md
+├── supercomputadoras_project/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── asgi.py
+├── computadoras/
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
+│   ├── management/
+│   │   └── commands/
+│   │       └── poblar_datos.py
+│   └── templates/
+│       └── computadoras/
+│           ├── base.html
+│           ├── lista.html
+│           ├── detalle.html
+│           ├── formulario.html
+│           └── confirmar_eliminar.html
+├── static/
+│   └── css/
+│       └── style.css
+└── documentacion_latex/
+    ├── reporte_proyecto.tex
+    ├── generar_pdf_reporte.py
+    ├── generar_capturas.py
+    ├── Proyecto_Final_Computacion_Concurrente_Django.pdf
+    └── imagenes/
+        ├── 01_verificar_entorno.png
+        ├── ...
+        └── 16_web_admin_listado.png
+```
 
 ---
 
-## 🔗 Enlaces de Interés
+## 6. Documentación Adicional
+
+En la carpeta `documentacion_latex/` se incluye:
+- `reporte_proyecto.tex`: Código fuente en formato LaTeX con el desarrollo teórico y práctico detallado.
+- `generar_pdf_reporte.py`: Script en Python para generar el reporte en formato PDF de manera automatizada.
+- `Proyecto_Final_Computacion_Concurrente_Django.pdf`: Documento final con la bitácora de terminal y capturas de pantalla de la aplicación web.
+
+---
+
+## 7. Referencias y Enlaces de Interés
+
+- [TOP500 The List: Ranking Oficial de Supercomputadoras](https://top500.org/)
+- [Documentación Oficial de Django](https://docs.djangoproject.com/)
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [¿Qué es Django y por qué importa? - Django y DRF](https://www.youtube.com/watch?v=B8OlRdYwNlA)
 - [Django Portafolio, Ejemplo Práctico](https://www.youtube.com/watch?v=zBjMF6je24U)
 - [Django REST Framework y React CRUD](https://www.youtube.com/watch?v=38XWpyEK8IY)
 - [Crea una agenda virtual con Django](https://www.youtube.com/watch?v=EQ-kqDmfUoM)
-- [TOP500 List](https://top500.org/)
