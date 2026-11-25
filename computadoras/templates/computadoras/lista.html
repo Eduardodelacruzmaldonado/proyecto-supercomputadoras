@@ -1,17 +1,17 @@
 {% extends "computadoras/base.html" %}
 {% load humanize %}
 
-{% block title %}Lista de Supercomputadoras | Base de Datos Django{% endblock %}
+{% block title %}Catálogo de Supercomputadoras | Django{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
 
-    <!-- Encabezado de la pagina -->
+    <!-- Titulo de seccion -->
     <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
         <div>
-            <h2 class="h4 mb-1">Registro de Supercomputadoras</h2>
+            <h3 class="h4 mb-1">Catálogo de Supercomputadoras</h3>
             <p class="text-muted small mb-0">
-                Base de datos con información técnica de las 3 computadoras más rápidas del mundo (CRUD con Django y SQLite).
+                Información técnica de las 3 computadoras más rápidas del mundo registrada en la base de datos relacional (SQLite).
             </p>
         </div>
         <div>
@@ -21,49 +21,43 @@
         </div>
     </div>
 
-    <!-- Resumen de registros y totales en la base de datos -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card p-3">
-                <span class="text-muted small">Total de Registros</span>
-                <span class="fs-4 fw-bold">{{ stats.total_equipos|default:"0" }}</span>
-                <span class="text-secondary small">computadoras en SQLite</span>
+    <!-- Panel de resumen plano institucional -->
+    <div class="summary-box">
+        <div class="row text-center">
+            <div class="col-6 col-md-3 summary-item py-1">
+                <span class="text-muted small d-block">Equipos en Base de Datos</span>
+                <span class="fs-4 fw-bold text-dark">{{ stats.total_equipos|default:"0" }}</span>
+                <span class="text-secondary small d-block">registros activos</span>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card p-3">
-                <span class="text-muted small">Cores Acumulados</span>
+            <div class="col-6 col-md-3 summary-item py-1">
+                <span class="text-muted small d-block">Cores Totales</span>
                 <span class="fs-4 fw-bold text-primary">{{ stats.total_cores|default:"0"|intcomma }}</span>
-                <span class="text-secondary small">núcleos de procesamiento</span>
+                <span class="text-secondary small d-block">núcleos de cómputo</span>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card p-3">
-                <span class="text-muted small">TeraFLOPS Totales</span>
+            <div class="col-6 col-md-3 summary-item py-1">
+                <span class="text-muted small d-block">Rendimiento Acumulado</span>
                 <span class="fs-4 fw-bold text-danger">{{ stats.total_teraflops|default:"0"|floatformat:0 }}</span>
-                <span class="text-secondary small">capacidad de cálculo</span>
+                <span class="text-secondary small d-block">TeraFLOPS</span>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card p-3">
-                <span class="text-muted small">Almacenamiento Total</span>
+            <div class="col-6 col-md-3 summary-item py-1">
+                <span class="text-muted small d-block">Almacenamiento Total</span>
                 <span class="fs-4 fw-bold text-dark">{{ stats.total_almacenamiento|default:"0"|floatformat:0 }} TB</span>
-                <span class="text-secondary small">memoria masiva</span>
+                <span class="text-secondary small d-block">Terabytes en memoria masiva</span>
             </div>
         </div>
     </div>
 
-    <!-- Tabla completa con los 7 campos obligatorios -->
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <span>Registros de la Base de Datos (db.sqlite3)</span>
-            <span class="badge bg-secondary">{{ supercomputadoras.count }} elementos</span>
+    <!-- Tabla Tecnica con los 7 campos obligatorios -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center py-2">
+            <span>Tabla de Registros (Archivo db.sqlite3)</span>
+            <span class="badge bg-secondary font-monospace">{{ supercomputadoras.count }} registros</span>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered table-hover align-middle mb-0">
                 <thead>
                     <tr>
-                        <th style="width: 50px;" class="text-center">#</th>
+                        <th style="width: 60px;" class="text-center">Posición</th>
                         <th>Nombre</th>
                         <th>País de Origen</th>
                         <th class="text-end">Número de Cores</th>
@@ -77,21 +71,25 @@
                 <tbody>
                     {% for comp in supercomputadoras %}
                     <tr>
-                        <td class="text-center text-muted fw-bold">{{ comp.ranking_posicion|default:forloop.counter }}</td>
+                        <td class="text-center fw-bold text-secondary">
+                            #{{ comp.ranking_posicion|default:forloop.counter }}
+                        </td>
                         <td>
                             <a href="{% url 'computadoras:detalle' comp.pk %}" class="fw-bold text-decoration-none">
                                 {{ comp.nombre }}
                             </a>
-                            {% if comp.fabricante %}
-                                <div class="text-muted small">{{ comp.fabricante }}</div>
+                            {% if comp.institucion %}
+                                <div class="text-muted small">{{ comp.institucion }}</div>
                             {% endif %}
                         </td>
                         <td>{{ comp.pais_origen }}</td>
                         <td class="text-end font-monospace">{{ comp.numero_cores|intcomma }}</td>
                         <td class="text-end font-monospace">{{ comp.ram_tb }} TB</td>
                         <td class="text-end font-monospace">{{ comp.almacenamiento_tb }} TB</td>
-                        <td class="text-end font-monospace fw-bold text-danger">{{ comp.teraflops }}</td>
-                        <td><span class="badge bg-light text-dark border">{{ comp.sistema_operativo }}</span></td>
+                        <td class="text-end font-monospace text-danger fw-bold">{{ comp.teraflops }}</td>
+                        <td>
+                            <span class="font-monospace small text-dark">{{ comp.sistema_operativo }}</span>
+                        </td>
                         <td class="text-center">
                             <div class="btn-group btn-group-sm" role="group">
                                 <a href="{% url 'computadoras:detalle' comp.pk %}" class="btn btn-outline-primary" title="Ver ficha técnica">
@@ -109,10 +107,10 @@
                     {% empty %}
                     <tr>
                         <td colspan="9" class="text-center py-4 text-muted">
-                            No hay supercomputadoras registradas actualmente en la base de datos.
+                            No hay supercomputadoras registradas en la base de datos.
                             <div class="mt-2">
                                 <a href="{% url 'computadoras:crear' %}" class="btn btn-primary btn-sm">
-                                    + Agregar primer registro
+                                    Registrar la primera supercomputadora
                                 </a>
                             </div>
                         </td>
