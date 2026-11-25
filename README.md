@@ -132,8 +132,6 @@ proyecto_supercomputadoras/
 │       └── style.css
 └── documentacion_latex/
     ├── reporte_proyecto.tex
-    ├── generar_pdf_reporte.py
-    ├── generar_capturas.py
     ├── Proyecto_Final_Computacion_Concurrente_Django.pdf
     └── imagenes/
         ├── 01_verificar_entorno.png
@@ -146,9 +144,8 @@ proyecto_supercomputadoras/
 ## 6. Documentación Adicional
 
 En la carpeta `documentacion_latex/` se incluye:
-- `reporte_proyecto.tex`: Código fuente en formato LaTeX con el desarrollo teórico y práctico detallado.
-- `generar_pdf_reporte.py`: Script en Python para generar el reporte en formato PDF de manera automatizada.
-- `Proyecto_Final_Computacion_Concurrente_Django.pdf`: Documento final con la bitácora de terminal y capturas de pantalla de la aplicación web.
+- `reporte_proyecto.tex`: Documento fuente en formato LaTeX generado directamente, estructurado con marco teórico de computación concurrente, bitácora de terminal y código fuente.
+- `Proyecto_Final_Computacion_Concurrente_Django.pdf`: Documento final compilado con la bitácora de terminal y capturas de pantalla de la aplicación web.
 
 ---
 

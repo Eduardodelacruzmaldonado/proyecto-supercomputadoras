@@ -1,70 +1,62 @@
-:root {
-    --primary-color: #0d6efd;
-    --primary-dark: #0a58ca;
-    --dark-bg: #111827;
-    --card-border: #e5e7eb;
-}
+/* Estilos limpios y tradicionales para proyecto academico Django */
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: #374151;
-    background-color: #f8fafc !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #212529;
+    background-color: #f4f6f9;
 }
 
-.font-monospace {
-    font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+/* Barra de navegacion */
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.3px;
 }
 
-.tracking-wider {
-    letter-spacing: 0.05em;
+/* Tablas */
+.table thead th {
+    background-color: #e9ecef;
+    color: #495057;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
 }
 
-/* Hover effects */
-.card-hover {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+.table-hover tbody tr:hover {
+    background-color: #f1f3f5;
 }
 
-.card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.15) !important;
+/* Tarjetas */
+.card {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background-color: #ffffff;
 }
 
-.icon-shape {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 54px;
-    height: 54px;
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
 }
 
-/* Custom form styles */
-.form-control:focus, .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+/* Formularios */
+.form-label {
+    font-weight: 500;
+    color: #343a40;
 }
 
-.table th {
-    font-size: 0.78rem;
-    letter-spacing: 0.05em;
-    font-weight: 700;
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f5f9;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+/* Botones y enlaces */
+.btn {
     border-radius: 4px;
+    font-weight: 500;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+/* Pie de pagina */
+footer {
+    border-top: 1px solid #dee2e6;
+    background-color: #ffffff;
 }

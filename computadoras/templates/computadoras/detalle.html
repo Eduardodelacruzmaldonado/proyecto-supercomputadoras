@@ -1,157 +1,116 @@
 {% extends "computadoras/base.html" %}
 {% load humanize %}
 
-{% block title %}Ficha Técnica: {{ computadora.nombre }} | Computación Concurrente{% endblock %}
+{% block title %}Detalle de Supercomputadora: {{ computadora.nombre }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
 
-    <!-- Migas de pan -->
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'computadoras:lista' %}" class="text-decoration-none">Listado</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ computadora.nombre }}</li>
-        </ol>
-    </nav>
+    <!-- Navegacion de regreso -->
+    <div class="mb-3">
+        <a href="{% url 'computadoras:lista' %}" class="text-decoration-none small text-muted">
+            &larr; Volver a la lista general
+        </a>
+    </div>
 
-    <!-- Tarjeta de Ficha Tecnica -->
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4">
-        <!-- Encabezado -->
-        <div class="card-header bg-dark text-white p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <div>
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    {% if computadora.ranking_posicion %}
-                        <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold">
-                            Ranking #{{ computadora.ranking_posicion }} TOP500
-                        </span>
-                    {% endif %}
-                    <span class="badge bg-secondary px-3 py-1 rounded-pill">{{ computadora.pais_origen }}</span>
-                </div>
-                <h2 class="h3 fw-bold mb-1">{{ computadora.nombre }}</h2>
-                <p class="text-secondary small mb-0">{{ computadora.institucion|default:"Institución de Investigación" }}</p>
+                <h4 class="mb-0">{{ computadora.nombre }}</h4>
+                <small class="text-muted">{{ computadora.pais_origen }} &bull; {{ computadora.institucion|default:"Centro de Supercómputo" }}</small>
             </div>
-            <div class="d-flex gap-2">
-                <a href="{% url 'computadoras:editar' computadora.pk %}" class="btn btn-outline-light btn-sm px-3">
-                    <i class="bi bi-pencil me-1"></i> Editar
-                </a>
-                <a href="{% url 'computadoras:eliminar' computadora.pk %}" class="btn btn-outline-danger btn-sm px-3">
-                    <i class="bi bi-trash me-1"></i> Eliminar
-                </a>
-                <a href="{% url 'computadoras:lista' %}" class="btn btn-light btn-sm px-3">
-                    <i class="bi bi-arrow-left me-1"></i> Volver al listado
-                </a>
+            <div class="btn-group btn-group-sm">
+                <a href="{% url 'computadoras:editar' computadora.pk %}" class="btn btn-outline-secondary">Editar</a>
+                <a href="{% url 'computadoras:eliminar' computadora.pk %}" class="btn btn-outline-danger">Borrar</a>
+                <a href="{% url 'computadoras:lista' %}" class="btn btn-outline-dark">Volver</a>
             </div>
         </div>
 
-        <div class="card-body p-4 p-lg-5">
-            <h5 class="fw-bold text-dark mb-4 border-bottom pb-2">
-                Especificaciones Técnicas y Capacidad de Cómputo
-            </h5>
+        <div class="card-body">
+            <h5 class="card-title border-bottom pb-2 mb-3">Especificaciones Técnicas (7 Campos Obligatorios)</h5>
 
-            <!-- Bloques de metricas principales -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-6 col-lg-3">
-                    <div class="p-3 bg-light border rounded-3 text-center h-100">
-                        <span class="text-muted small text-uppercase fw-semibold d-block">Rendimiento</span>
-                        <h4 class="fw-bold text-danger mb-0 font-monospace">{{ computadora.teraflops|intcomma }}</h4>
-                        <span class="small text-muted font-monospace">TeraFLOPS</span>
-                        <div class="small text-muted mt-2 border-top pt-2">
-                            &approx; {{ computadora.petaflops|floatformat:2 }} PetaFLOPS<br>
-                            &approx; {{ computadora.exaflops|floatformat:3 }} ExaFLOPS
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="width: 40%;" class="bg-light">1. Nombre:</th>
+                                <td><strong>{{ computadora.nombre }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">2. País de Origen:</th>
+                                <td>{{ computadora.pais_origen }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">3. Número de Cores:</th>
+                                <td class="font-monospace">{{ computadora.numero_cores|intcomma }} núcleos</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">4. Cantidad de RAM:</th>
+                                <td class="font-monospace">
+                                    {{ computadora.ram_tb }} TB
+                                    <span class="text-muted small">({{ computadora.ram_petabytes|floatformat:2 }} PB)</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="col-md-6 col-lg-3">
-                    <div class="p-3 bg-light border rounded-3 text-center h-100">
-                        <span class="text-muted small text-uppercase fw-semibold d-block">Cores Concurrentes</span>
-                        <h4 class="fw-bold text-primary mb-0 font-monospace">{{ computadora.numero_cores|intcomma }}</h4>
-                        <span class="small text-muted font-monospace">núcleos totales</span>
-                        <div class="small text-muted mt-2 border-top pt-2">
-                            Arquitectura paralela heterogénea (CPU + GPUs)
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="p-3 bg-light border rounded-3 text-center h-100">
-                        <span class="text-muted small text-uppercase fw-semibold d-block">Memoria RAM</span>
-                        <h4 class="fw-bold text-success mb-0 font-monospace">{{ computadora.ram_tb|intcomma }}</h4>
-                        <span class="small text-muted font-monospace">Terabytes (TB)</span>
-                        <div class="small text-muted mt-2 border-top pt-2">
-                            &approx; {{ computadora.ram_petabytes|floatformat:2 }} Petabytes de RAM
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="p-3 bg-light border rounded-3 text-center h-100">
-                        <span class="text-muted small text-uppercase fw-semibold d-block">Almacenamiento</span>
-                        <h4 class="fw-bold text-info mb-0 font-monospace">{{ computadora.almacenamiento_tb|intcomma }}</h4>
-                        <span class="small text-muted font-monospace">Terabytes (TB)</span>
-                        <div class="small text-muted mt-2 border-top pt-2">
-                            &approx; {{ computadora.almacenamiento_petabytes|floatformat:1 }} Petabytes
-                        </div>
-                    </div>
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="width: 40%;" class="bg-light">5. Almacenamiento:</th>
+                                <td class="font-monospace">
+                                    {{ computadora.almacenamiento_tb }} TB
+                                    <span class="text-muted small">({{ computadora.almacenamiento_petabytes|floatformat:1 }} PB)</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">6. TeraFLOPS:</th>
+                                <td class="font-monospace text-danger fw-bold">
+                                    {{ computadora.teraflops }} TFLOPS
+                                    <span class="text-muted small">({{ computadora.exaflops|floatformat:3 }} EFLOPS)</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">7. Sistema Operativo:</th>
+                                <td>{{ computadora.sistema_operativo }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Posición en TOP500:</th>
+                                <td>#{{ computadora.ranking_posicion|default:"No especificado" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Tablas de detalle -->
-            <div class="row g-4">
-                <div class="col-lg-6">
-                    <div class="card border rounded-3 h-100">
-                        <div class="card-header bg-light fw-bold">
-                            Detalles del Sistema y Plataforma
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span class="text-muted">Nombre del sistema:</span>
-                                <span class="fw-bold">{{ computadora.nombre }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span class="text-muted">País de origen:</span>
-                                <span>{{ computadora.pais_origen }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span class="text-muted">Sistema operativo:</span>
-                                <span class="text-end font-monospace small">{{ computadora.sistema_operativo }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span class="text-muted">Fabricante / Arquitectura:</span>
-                                <span class="text-end">{{ computadora.fabricante|default:"No especificado" }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span class="text-muted">Institución sede:</span>
-                                <span class="text-end">{{ computadora.institucion|default:"No especificado" }}</span>
-                            </li>
-                        </ul>
-                    </div>
+            <h5 class="card-title border-bottom pb-2 mb-3 mt-3">Metadatos de la Base de Datos SQLite</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="list-group list-group-flush small">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted">ID Primario (PK):</span>
+                            <span>#{{ computadora.id }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted">Fabricante / Arquitectura:</span>
+                            <span>{{ computadora.fabricante|default:"No registrado" }}</span>
+                        </li>
+                    </ul>
                 </div>
-
-                <div class="col-lg-6">
-                    <div class="card border rounded-3 h-100">
-                        <div class="card-header bg-light fw-bold">
-                            Registro en la Base de Datos SQLite
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span class="text-muted">Identificador (ID / PK):</span>
-                                <span class="font-monospace fw-bold">#{{ computadora.id }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span class="text-muted">Motor de base de datos:</span>
-                                <span>SQLite 3</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span class="text-muted">Fecha de registro:</span>
-                                <span class="text-muted small">{{ computadora.fecha_registro|date:"d/m/Y H:i" }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span class="text-muted">Última actualización:</span>
-                                <span class="text-muted small">{{ computadora.fecha_actualizacion|date:"d/m/Y H:i" }}</span>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="col-md-6">
+                    <ul class="list-group list-group-flush small">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted">Fecha de Creación:</span>
+                            <span>{{ computadora.fecha_registro|date:"d/m/Y H:i" }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="text-muted">Última Modificación:</span>
+                            <span>{{ computadora.fecha_actualizacion|date:"d/m/Y H:i" }}</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
 

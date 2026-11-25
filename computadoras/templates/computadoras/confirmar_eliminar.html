@@ -1,52 +1,55 @@
 {% extends "computadoras/base.html" %}
 
-{% block title %}Confirmar Eliminación | SupercómputoDB{% endblock %}
+{% block title %}Confirmar Eliminación | Django{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
 
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
-                <div class="card-header bg-danger text-white p-4 text-center">
-                    <i class="bi bi-trash fs-1 d-block mb-2"></i>
-                    <h3 class="h4 fw-bold mb-0">Confirmar Eliminación</h3>
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">¿Confirmar Eliminación del Registro?</h5>
                 </div>
-                <div class="card-body p-4 text-center">
-                    <p class="text-muted mb-4">
-                        ¿Estás seguro de que deseas eliminar permanentemente el registro de <strong class="text-dark">{{ computadora.nombre }}</strong> de la base de datos?
+                <div class="card-body">
+                    <p>
+                        Estás a punto de borrar de forma permanente la supercomputadora
+                        <strong>{{ computadora.nombre }}</strong> de la base de datos SQLite.
                     </p>
 
-                    <div class="bg-light p-3 rounded-3 text-start mb-4 border">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted small">Nombre:</span>
-                            <span class="fw-bold">{{ computadora.nombre }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted small">País:</span>
-                            <span>{{ computadora.pais_origen }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted small">Rendimiento:</span>
-                            <span class="font-monospace text-danger fw-bold">{{ computadora.teraflops }} TFLOPS</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted small">Cores:</span>
-                            <span class="font-monospace">{{ computadora.numero_cores }}</span>
-                        </div>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                            <tr>
+                                <th class="bg-light" style="width: 35%;">Nombre:</th>
+                                <td>{{ computadora.nombre }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">País:</th>
+                                <td>{{ computadora.pais_origen }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Rendimiento:</th>
+                                <td>{{ computadora.teraflops }} TFLOPS</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="alert alert-warning small mb-3">
+                        Esta acción no se puede deshacer. Se ejecutará una sentencia <code>DELETE</code> en <code>db.sqlite3</code>.
                     </div>
 
                     <form method="post">
                         {% csrf_token %}
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="{% url 'computadoras:lista' %}" class="btn btn-outline-secondary px-4">
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'computadoras:lista' %}" class="btn btn-secondary">
                                 Cancelar
                             </a>
-                            <button type="submit" class="btn btn-danger px-4 fw-semibold">
-                                Eliminar Registro
+                            <button type="submit" class="btn btn-danger">
+                                Sí, Eliminar de la Base de Datos
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
